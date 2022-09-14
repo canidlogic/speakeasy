@@ -16,7 +16,7 @@ speakeasy_pic.pl - Batch import images into a SpeakEasy database.
 
 =head1 SYNOPSIS
 
-  ./speakeasy_pic.pl db.sqlite script.txt
+  ./speakeasy_pic.pl db.sqlite script.txt /base/dir/
 
 =head1 DESCRIPTION
 
@@ -35,7 +35,9 @@ information.
 
 The first argument is the SpeakEasy database to configure.  The second
 argument is the path to a text file to use as a batch script.  See below
-for the format of the text file batch script.
+for the format of the text file batch script.  The third argument is the
+base directory in the file system against which file system directories
+in the batch script are resolved.  It must end with a forward slash.
 
 =head2 Batch script file format
 
@@ -56,7 +58,7 @@ lines are defined:
   pic source_name.jpg
 
 There is a current directory in the file system, which starts out as the
-current directory the script is run in.  There is also a current
+base directory given on the command line.  There is also a current
 directory in the database, which starts out at the root level and not in
 any subdirectories.
 
@@ -136,9 +138,16 @@ that failed midway through.
 # Local data
 # ==========
 
+# The base path to resolve paths in the @fs_stack against.
+#
+# This must end with a slash.  It is set at the entrypoint of the
+# script.
+#
+my $base_path;
+
 # The file system directory stack.
 #
-# This begins empty, meaning the current directory of the script.
+# This begins empty, meaning the base path.
 #
 # Each time a subdirectory is entered, its name is pushed onto the
 # stack.  Each time a subdirectory is left, its name is popped from the
@@ -631,17 +640,20 @@ sub pic {
 # Program entrypoint
 # ==================
 
-# Check that we got two arguments
+# Check that we got three arguments
 #
-($#ARGV == 1) or die "Expecting two arguments, stopped";
+($#ARGV == 2) or die "Expecting three arguments, stopped";
 
 # Get and check arguments
 #
 my $db_path   = $ARGV[0];
 my $data_path = $ARGV[1];
+$base_path    = $ARGV[2];
 
 (-f $db_path  ) or die "Can't find file '$db_path', stopped";
 (-f $data_path) or die "Can't find file '$data_path', stopped";
+($base_path =~ /\/\z/) or
+  die "Base path must end with slash, stopped";
 
 # Load the database
 #
