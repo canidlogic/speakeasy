@@ -4,7 +4,7 @@ speakeasy\_pic.pl - Batch import images into a SpeakEasy database.
 
 # SYNOPSIS
 
-    ./speakeasy_pic.pl db.sqlite script.txt
+    ./speakeasy_pic.pl db.sqlite script.txt /base/dir/
 
 # DESCRIPTION
 
@@ -23,7 +23,9 @@ information.
 
 The first argument is the SpeakEasy database to configure.  The second
 argument is the path to a text file to use as a batch script.  See below
-for the format of the text file batch script.
+for the format of the text file batch script.  The third argument is the
+base directory in the file system against which file system directories
+in the batch script are resolved.  It must end with a forward slash.
 
 ## Batch script file format
 
@@ -44,7 +46,7 @@ lines are defined:
     pic source_name.jpg
 
 There is a current directory in the file system, which starts out as the
-current directory the script is run in.  There is also a current
+base directory given on the command line.  There is also a current
 directory in the database, which starts out at the root level and not in
 any subdirectories.
 
