@@ -232,8 +232,19 @@ sub load {
   }
   
   my $src_image = Imager->new();
-  $src_image->read(file => $path, type => $src_fmt) or
-    die "Failed to decode image '$path', stopped";
+  if ($src_fmt eq 'png') {
+    # For PNG, avoid benign errors such as incorrect sRGB profile
+    $src_image->read(
+        file => $path,
+        type => $src_fmt,
+        png_ignore_benign_errors => 1) or
+      die sprintf("Failed to decode image '%s' because '%s', stopped",
+                    $path, $src_image->errstr);
+  } else {
+    $src_image->read(file => $path, type => $src_fmt) or
+      die sprintf("Failed to decode image '%s' because '%s', stopped",
+                    $path, $src_image->errstr);
+  }
   
   # If the source image has transparency, we need to compose it over an
   # opaque white background; otherwise, composed image is same as source
