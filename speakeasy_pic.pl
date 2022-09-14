@@ -397,9 +397,9 @@ sub pic {
   # Form the full path to the image
   my $image_path;
   if (($#fs_stack >= 0) and (not ($path =~ /\A\//))) {
-    $image_path = join('/', @fs_stack) . '/' . $path;
+    $image_path = $base_path . join('/', @fs_stack) . '/' . $path;
   } else {
-    $image_path = $path;
+    $image_path = $base_path . $path;
   }
   
   # Attempt to auto-detect a source type from the path
@@ -504,7 +504,8 @@ sub pic {
     . 'INNER JOIN res ON res.resid = list.resid '
     . 'WHERE nodeid=? AND resname=?',
     undef,
-    $current_node, $pic_name);
+    $current_node,
+    SpeakEasy::DB->string_to_db($pic_name));
   if (defined $qr) {
     # We can skip this
     print { \*STDERR } "Skipping $image_path...\n";
@@ -639,6 +640,11 @@ sub pic {
 # ==================
 # Program entrypoint
 # ==================
+
+# Set UTF-8 diagnostics
+#
+binmode(STDERR, ":encoding(UTF-8)") or
+  die "Failed to set UTF-8 diagnostics, stopped";
 
 # Check that we got three arguments
 #
