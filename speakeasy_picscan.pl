@@ -5,6 +5,9 @@ use warnings;
 # SpeakEasy imports
 use SpeakEasy::Datafile;
 
+# Core imports
+use Encode qw( decode );
+
 =head1 NAME
 
 speakeasy_picscan.pl - Generate a script for speakeasy_pic by scanning
@@ -228,6 +231,17 @@ sub proc_dir {
   
   # Iterate through all directory entries
   for(my $ent = readdir($dh); defined $ent; $ent = readdir($dh)) {
+    # Attempt to decode file name as UTF-8, then fall back to CP-1250
+    # (Latin-1) if that fails
+    eval {
+      $ent = decode('UTF-8', $ent,
+                Encode::FB_CROAK | Encode::LEAVE_SRC);
+    };
+    if ($@) {
+      $ent = decode('CP1250', $ent,
+                Encode::FB_CROAK | Encode::LEAVE_SRC);
+    }
+    
     # Skip the '.' and '..' entries
     if (($ent eq '.') or ($ent eq '..')) {
       next;
@@ -296,10 +310,12 @@ sub proc_dir {
 # Program entrypoint
 # ==================
 
-# Set UTF-8 output
+# Set UTF-8 output and warnings
 #
 binmode(STDOUT, ":encoding(UTF-8)") or
   die "Failed to set UTF-8 output, stopped";
+binmode(STDERR, ":encoding(UTF-8)") or
+  die "Failed to set UTF-8 diagnostics, stopped";
 
 # Check that we got two or three arguments
 #
