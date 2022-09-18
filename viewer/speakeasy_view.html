@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>SpeakEasy View</title>
+    <meta name="viewport" 
+      content="width=device-width, initial-scale=1.0"/>
+    <style>
+
+body {
+  max-width: 50em;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  margin-top: 2.5em;
+  margin-bottom: 5em;
+  font-family: sans-serif;
+  color: black;
+  background-color: whitesmoke;
+}
+
+:link {
+  text-decoration: none;
+  color: blue;
+}
+
+:visited {
+  text-decoration: none;
+  color: blue;
+}
+
+.call {
+  font-weight: bold;
+  color: white;
+  background-color: blue;
+  padding: 0.5em;
+}
+
+.ctlrow {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+.ctlright {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  text-align: right;
+}
+
+h1 {
+  text-align: center;
+  border-bottom: thin solid;
+  padding-bottom: 0.5em;
+}
+
+#divLoadAnimation {
+  text-align: center;
+  color: gray;
+  font-size: 250%;
+  animation-duration: 2s;
+  animation-name: coloranim;
+  animation-iteration-count: infinite;
+}
+
+#spnLoadWiden {
+  animation-duration: 2s;
+  animation-name: wideanim;
+  animation-iteration-count: infinite;
+}
+
+@keyframes wideanim {
+  from {
+    letter-spacing: 0;
+  }
+  to {
+    letter-spacing: 1em;
+  }
+}
+
+@keyframes coloranim {
+  from {
+    color: black;
+  }
+  to {
+    color: gray;
+  }
+}
+
+#divNoScript {
+  text-align: center;
+  font-weight: bold;
+  font-family: serif;
+  font-size: larger;
+}
+
+#divMessageContent {
+  background-color: white;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  border: medium solid silver;
+  font-family: monospace;
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+#divTrail {
+  background-color: white;
+  font-size: 125%;
+  padding: 0.5em;
+  border: medium solid silver;
+}
+
+.trailhere {
+  font-weight: bold;
+}
+
+#divSubfolders {
+  font-family: monospace;
+  font-size: 120%;
+}
+
+#divSubfolders li {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
+
+#divFiles table {
+  border-collapse: collapse;
+}
+
+#divFiles td {
+  border: thin solid;
+  padding: 0.5em;
+  font-family: monospace;
+}
+
+#divFiles .pic {
+  text-align: center;
+  width: 7.5em;
+}
+
+#divFiles .entry {
+  text-align: left;
+}
+
+    </style>
+    <script src="scavenger.js"></script>
+    <script src="speakeasy_view.js"></script>
+  </head>
+  <body>
+    <h1>SpeakEasy View</h1>
+    
+    <div id="divFullPic" style="display: none;">
+      <img id="imgFullPic"/>
+    </div>
+    
+    <div id="divLoading">
+      <p id="divLoadAnimation">
+        <span id="spnLoadWiden">&bull;&bull;</span>&bull;
+      </p>
+      <noscript>
+        <p id="divNoScript"><b>ERROR: JavaScript is required!</b></p>
+      </noscript>
+    </div>
+    
+    <div id="divLoadError" style="display: none;">
+      <p>An error occurred:</p>
+      <p id="divMessageContent">
+        &nbsp;
+      </p>
+      <div class="ctlrow">
+        <a href="javascript:void(speakeasy.handleReload());" class="call">
+          Back to load screen
+        </a>
+      </div>
+    </div>
+    
+    <div id="divLoadDialog" style="display: none;">
+      <p>Choose a compiled SpeakEasy binary file to view:</p>
+      <input type="file" id="filUpload"/>
+      <p>Then load the file here:</p>
+      <div class="ctlrow">
+        <a href="javascript:void(speakeasy.handleUpload());" class="call">
+          Load file
+        </a>
+      </div>
+    </div>
+    
+    <div id="divMain" style="display: none;">
+      <p class="ctlright">
+        <a href="javascript:void(speakeasy.handleReload());" class="call">
+          Close SpeakEasy file
+        </a>
+      </p>
+      <p id="divTrail">
+        &nbsp;
+      </p>
+      
+      <h2>Subfolders</h2>
+      <div id="divSubfolders">
+        &nbsp;
+      </div>
+      
+      <h2>Files</h2>
+      <p id="divSort">
+        Sort order:
+        <select id="selSort">
+          <option value="name_asc" selected>Name (A-Z)</option>
+          <option value="name_desc">Name (Z-A)</option>
+          <option value="date_asc">Date (Early-Recent)</option>
+          <option value="date_desc">Date (Recent-Early)</option>
+        </select>
+      </p>
+      <div id="divFiles">
+        <table>
+          <tbody id="tblData"></tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
