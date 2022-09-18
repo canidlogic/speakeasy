@@ -148,6 +148,10 @@ h1 {
   text-align: left;
 }
 
+#divShowMore {
+  margin-top: 2em;
+}
+
     </style>
     <script src="scavenger.js"></script>
     <script src="speakeasy_view.js"></script>
@@ -216,6 +220,11 @@ h1 {
         <table>
           <tbody id="tblData"></tbody>
         </table>
+      </div>
+      <div id="divShowMore">
+        <a href="javascript:void(speakeasy.loadMore());" class="call">
+          Load more files
+        </a>
       </div>
     </div>
   </body>
