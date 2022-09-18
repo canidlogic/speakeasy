@@ -732,10 +732,10 @@
       const img = document.createElement("img");
       img.src = urls[files[i].tbin.toString(10)];
       
-      // Wrap the <img> in an <a> that performs an enlarge
+      // Wrap the <img> in an <a> that opens image in separate tab
       const aimg = document.createElement("a");
-      aimg.href = "javascript:void(speakeasy.showPic(" +
-                    files[i].rbin.toString(10) + "));";
+      aimg.href = urls[files[i].rbin.toString(10)];
+      aimg.target = "_blank";
       aimg.appendChild(img);
       
       // Add the linked img to the pic cell
@@ -890,43 +890,6 @@
    */
 
   /*
-   * Invoked when a picture is selected to show full-screen.
-   * 
-   * Parameters:
-   * 
-   *   objid : integer - the object ID of the full-size picture
-   */
-  function showPic(objid) {
-    // Check parameter
-    if (!isInteger(objid)) {
-      throw new TypeError();
-    }
-    
-    // Ignore if no file cache
-    if (m_file_cache === null) {
-      return;
-    }
-    
-    // Ignore if object not cached
-    if (!(objid.toString(10) in m_file_cache.urls)) {
-      return;
-    }
-    
-    // Get the URL of the full-size picture
-    const url = m_file_cache.urls[objid.toString(10)];
-    
-    // Set the full-screen <img> for the URL
-    findElement("imgFullPic").src = url;
-    
-    // Show the full DIV
-    const div = findElement("divFullPic");
-    div.style.display = "block";
-    
-    // Set image full-screen
-    _requestFullscreen(div, { navigationUI: "hide" });
-  }
-
-  /*
    * Invoked from dynamically generated listings to go to another
    * directory.
    * 
@@ -995,14 +958,6 @@
    * handler to the sort order control.
    */
   function handleLoad() {
-    // Add a click listener to the fullscreen <img> that revokes
-    // fullscreen
-    findElement("imgFullPic").addEventListener("click", function(ev) {
-      _exitFullscreen();
-      findElement("divFullPic").style.display = "none";
-      findElement("imgFullPic").src = "";
-    });
-    
     // Add an event handler for sort order control
     const selSort = findElement("selSort");
     selSort.addEventListener('change', (ev) => {
@@ -1044,7 +999,6 @@
    */
   
   window.speakeasy = {
-    "showPic": showPic,
     "goDir": goDir,
     "handleReload": handleReload,
     "handleUpload": handleUpload,
